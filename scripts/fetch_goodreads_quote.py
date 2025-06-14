@@ -19,12 +19,12 @@ try:
     # Locate the quote container
     quote_block = soup.select_one("div.quoteDetails")
     if not quote_block:
-        raise RuntimeError("Quote container not found on the page")
+        raise RuntimeError("❌ Quote container not found on the page")
 
     # Extract quote text
     text_div = quote_block.find("div", class_="quoteText")
     if not text_div:
-        raise RuntimeError("Quote text element not found")
+        raise RuntimeError("❌ Quote text element not found")
     
     # Clean and split quote text
     full_text = text_div.get_text(separator=" ", strip=True)
@@ -46,36 +46,31 @@ try:
     img_tag = quote_block.find("img")
     author_img_url = img_tag['src'] if img_tag else None
 
-    # Format output with circular author image
-    html_content = f"""
-<div style="font-family: 'JetBrains Mono', monospace; font-size: 14px;">
+    # Format output using GitHub-compatible markdown
+    # =============================================
+    # GitHub only supports limited HTML/CSS in markdown:
+    # 1. Use markdown for the quote block
+    # 2. For circular image, use standard markdown with width attribute
+    # 3. Align using HTML div since GitHub doesn't support flexbox
+    # =============================================
+    
+    markdown_content = f"> {quote_text}\n"
+    markdown_content += f"> \n> ― *{author}*\n\n"
 
-> {quote_text}
-> <p style="text-align: right; margin-top: 10px; font-style: italic;">— {author}</p>
-
-</div>
-"""
-
-    # Add circular image if available
+    # Add circular image using HTML with inline styles
     if author_img_url:
-        html_content += f"""
-<div style="display: flex; justify-content: center; margin-top: 20px;">
-    <img 
-        src="{author_img_url}" 
-        alt="{author}" 
-        width="120" 
-        height="120"
-        style="
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #e1e4e8;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        "
-    >
-</div>
-"""
+        markdown_content += f'<div align="center">\n\n'
+        markdown_content += f'<img src="{author_img_url}" alt="{author}" width="120" '
+        markdown_content += 'style="border-radius: 50%; object-fit: cover; border: 3px solid #e1e4e8;">\n\n'
+        markdown_content += '</div>'
 
     # Update README.md
+    # =============================================
+    # Important: GitHub will only render the image if:
+    # 1. The URL is absolute and publicly accessible
+    # 2. The HTML is simple and uses supported attributes
+    # =============================================
+    
     with open(README_PATH, "r", encoding="utf-8") as f:
         content = f.read()
 
@@ -85,15 +80,18 @@ try:
     
     new_content = (
         content[:start_idx] +
-        "\n\n" + html_content.strip() + "\n\n" +
+        "\n\n" + markdown_content.strip() + "\n\n" +
         content[end_idx:]
     )
 
     with open(README_PATH, "w", encoding="utf-8") as f:
         f.write(new_content)
 
-    print("README updated successfully!")
+    print("✅ README updated successfully!")
+    print(f"ℹ️ Quote added: {quote_text[:50]}...")
+    print(f"ℹ️ Author: {author}")
+    print(f"ℹ️ Image: {'✅ Found' if author_img_url else '❌ Not found'}")
 
 except Exception as e:
-    print(f"Error: {e}")
+    print(f"❌ Error: {e}")
     exit(1)
