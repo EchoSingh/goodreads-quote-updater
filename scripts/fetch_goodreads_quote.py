@@ -3,7 +3,6 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
-# Configuration
 URL = os.getenv("PROFILE_URL", "https://www.goodreads.com/user/show/191174534-aditya-singh")
 HEADERS = {"User-Agent": "Mozilla/5.0"}
 README_PATH = "README.md"
@@ -13,71 +12,65 @@ END_MARKER = "<!-- QUOTE_END -->"
 try:
     # Fetch Goodreads profile
     res = requests.get(URL, headers=HEADERS)
-    res.raise_for_status()
+    res.raise_for_status() 
     soup = BeautifulSoup(res.text, "html.parser")
 
-    # Locate the quote container
+    # Find quote container
     quote_block = soup.select_one("div.quoteDetails")
     if not quote_block:
-        raise RuntimeError("❌ Quote container not found on the page")
+        raise RuntimeError("❌ Quote container not found")
 
     # Extract quote text
     text_div = quote_block.find("div", class_="quoteText")
     if not text_div:
         raise RuntimeError("❌ Quote text element not found")
     
-    # Clean and split quote text
+    # Clean and process text
     full_text = text_div.get_text(separator=" ", strip=True)
     quote_text = ""
     author = "Unknown"
 
-    # Improved quote/author extraction using regex
+    # Extract quote and author
     match = re.search(r'^(“.*?”|".*?")(.*?)$', full_text)
     if match:
         quote_text = match.group(1).strip()
         author_part = match.group(2).strip()
-        # Extract author name by removing attribution prefixes
         author = re.sub(r'^[―–—\s]+', '', author_part).split('\n')[0].strip()
     else:
-        # Fallback if regex fails
         quote_text = full_text.split('Delete')[0].strip()
 
-    # Get author image (if available)
+    # Get author image
     img_tag = quote_block.find("img")
     author_img_url = img_tag['src'] if img_tag else None
-
-    # GitHub-compatible formatting without CSS
-    # ========================================
-    # 1. Use standard markdown for the quote
-    # 2. For circular image: Use a service that provides circular images
-    #    or create the circle effect using GitHub's avatar rendering
-    # ========================================
     
-    markdown_content = f"> {quote_text}\n\n"
-    markdown_content += f"<p align=\"right\"><em>― {author}</em></p>\n\n"
-
-    # Add author image with GitHub's avatar rendering
+    # Create table layout with image on left and quote on right
+    markdown_content = '<table><tr>\n'
+    
+    # Left column for image (if available)
     if author_img_url:
-        # GitHub automatically renders square images as circles when using ?size= parameter
-        # We'll use the image URL directly with size parameters
-        circle_img_url = f"{author_img_url.split('?')[0]}?size=200"
-        
-        markdown_content += f"<div align=\"center\">\n\n"
-        markdown_content += f"[![]({circle_img_url})]"
-        markdown_content += f"(https://www.goodreads.com/user/show/191174534-aditya-singh)\n\n"
-        markdown_content += "</div>"
+        markdown_content += '<td width="30%" align="center">\n'
+        markdown_content += f'  <img src="{author_img_url}" alt="{author}" width="150" style="border-radius:50%">\n'
+        markdown_content += '</td>\n'
+    
+    # Right column for quote
+    markdown_content += '<td width="70%" valign="center">\n'
+    markdown_content += f'  <p style="font-size: 16px; font-style: italic;">{quote_text}</p>\n'
+    markdown_content += f'  <p align="right" style="font-weight: bold;">― {author}</p>\n'
+    markdown_content += '</td>\n'
+    
+    markdown_content += '</tr></table>'
 
     # Update README.md
     with open(README_PATH, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # Locate markers and replace content
+    # Replace content between markers
     start_idx = content.index(START_MARKER) + len(START_MARKER)
     end_idx = content.index(END_MARKER)
     
     new_content = (
         content[:start_idx] +
-        "\n\n" + markdown_content.strip() + "\n\n" +
+        "\n\n" + markdown_content + "\n\n" +
         content[end_idx:]
     )
 
@@ -87,7 +80,7 @@ try:
     print("✅ README updated successfully!")
     print(f"ℹ️ Quote: {quote_text[:50]}...")
     print(f"ℹ️ Author: {author}")
-    print(f"ℹ️ Image URL: {circle_img_url if author_img_url else 'None'}")
+    print(f"ℹ️ Image: {'✅ Found' if author_img_url else '❌ Not found'}")
 
 except Exception as e:
     print(f"❌ Error: {e}")
