@@ -43,7 +43,7 @@ quote_md = f"""
 """
 
 if author_img_url:
-    quote_md += f'\n<p align="center"><img src="{author_img_url}" alt="{author}" width="100"/></p>'
+    quote_md += f'<img src="{author_img_url}" alt="{author}" width="100"/>'
 
 # Replace content in README.md
 with open("README.md", "r", encoding="utf-8") as f:
