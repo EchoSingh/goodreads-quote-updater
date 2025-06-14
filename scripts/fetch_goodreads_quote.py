@@ -1,3 +1,29 @@
+'''
+                     _
+                  _ooOoo_
+                 o8888888o
+                 88" . "88
+                 (| -_- |)
+                 O\  =  /O
+              ____/`---'\____
+            .'  \|     |//  `.
+           /  \|||  :  |||//  \
+          /  _||||| -:- |||||_  \
+          |   | \\  -  /// |   |
+          | \_|  ''\---/''  |_/ |
+          \  .-\__  `-`  __/-.  /
+        ___`. .'  /--.--\  `. .'___
+     ."" '<  `.___\_<|>_/___.' _> "".
+    | | :  `- \`. ;`. _/; .'/ /  .' ; |
+    \  \ `-.   \_\_`. _.'_/_/  -' _.' /
+===========`-.`___`-.__\ \___  /__.-'_.'_.-'==============
+              `=--=-'                    Discipline, Consistency and Hardwork
+
+Author: Aditya Singh
+Date: 2025-06-14
+Description: This script automatically updates the README.md file with a daily quote from the user's Goodreads profile.
+'''
+
 import os
 import re
 import requests
@@ -10,27 +36,27 @@ START_MARKER = "<!-- QUOTE_START -->"
 END_MARKER = "<!-- QUOTE_END -->"
 
 try:
-    # Fetch Goodreads profile
+   
     res = requests.get(URL, headers=HEADERS)
     res.raise_for_status() 
     soup = BeautifulSoup(res.text, "html.parser")
 
-    # Find quote container
+  
     quote_block = soup.select_one("div.quoteDetails")
     if not quote_block:
-        raise RuntimeError("❌ Quote container not found")
+        raise RuntimeError("Quote container not found")
 
-    # Extract quote text
+ 
     text_div = quote_block.find("div", class_="quoteText")
     if not text_div:
-        raise RuntimeError("❌ Quote text element not found")
+        raise RuntimeError("Quote text element not found")
     
-    # Clean and process text
+ 
     full_text = text_div.get_text(separator=" ", strip=True)
     quote_text = ""
     author = "Unknown"
 
-    # Extract quote and author
+    
     match = re.search(r'^(“.*?”|".*?")(.*?)$', full_text)
     if match:
         quote_text = match.group(1).strip()
@@ -39,11 +65,11 @@ try:
     else:
         quote_text = full_text.split('Delete')[0].strip()
 
-    # Get author image
+   
     img_tag = quote_block.find("img")
     author_img_url = img_tag['src'] if img_tag else None
     
-    # Create table layout with image on left and quote on right
+
     markdown_content = '<table><tr>\n'
     
     # Left column for image (if available)
@@ -60,11 +86,9 @@ try:
     
     markdown_content += '</tr></table>'
 
-    # Update README.md
     with open(README_PATH, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # Replace content between markers
     start_idx = content.index(START_MARKER) + len(START_MARKER)
     end_idx = content.index(END_MARKER)
     
@@ -77,11 +101,11 @@ try:
     with open(README_PATH, "w", encoding="utf-8") as f:
         f.write(new_content)
 
-    print("✅ README updated successfully!")
-    print(f"ℹ️ Quote: {quote_text[:50]}...")
-    print(f"ℹ️ Author: {author}")
-    print(f"ℹ️ Image: {'✅ Found' if author_img_url else '❌ Not found'}")
+    print("README updated successfully!")
+    print(f"Quote: {quote_text[:50]}...")
+    print(f"Author: {author}")
+    print(f"Image: {'Found' if author_img_url else 'Not found'}")
 
 except Exception as e:
-    print(f"❌ Error: {e}")
+    print(f"Error: {e}")
     exit(1)
