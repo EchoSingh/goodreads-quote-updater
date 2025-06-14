@@ -13,7 +13,7 @@ END_MARKER = "<!-- QUOTE_END -->"
 try:
     # Fetch Goodreads profile
     res = requests.get(URL, headers=HEADERS)
-    res.raise_for_status()  # Raise exception for HTTP errors
+    res.raise_for_status()
     soup = BeautifulSoup(res.text, "html.parser")
 
     # Locate the quote container
@@ -46,31 +46,28 @@ try:
     img_tag = quote_block.find("img")
     author_img_url = img_tag['src'] if img_tag else None
 
-    # Format output using GitHub-compatible markdown
-    # =============================================
-    # GitHub only supports limited HTML/CSS in markdown:
-    # 1. Use markdown for the quote block
-    # 2. For circular image, use standard markdown with width attribute
-    # 3. Align using HTML div since GitHub doesn't support flexbox
-    # =============================================
+    # GitHub-compatible formatting without CSS
+    # ========================================
+    # 1. Use standard markdown for the quote
+    # 2. For circular image: Use a service that provides circular images
+    #    or create the circle effect using GitHub's avatar rendering
+    # ========================================
     
-    markdown_content = f"> {quote_text}\n"
-    markdown_content += f"> \n> ― *{author}*\n\n"
+    markdown_content = f"> {quote_text}\n\n"
+    markdown_content += f"<p align=\"right\"><em>― {author}</em></p>\n\n"
 
-    # Add circular image using HTML with inline styles
+    # Add author image with GitHub's avatar rendering
     if author_img_url:
-        markdown_content += f'<div align="center">\n\n'
-        markdown_content += f'<img src="{author_img_url}" alt="{author}" width="120" '
-        markdown_content += 'style="border-radius: 50%; object-fit: cover; border: 3px solid #e1e4e8;">\n\n'
-        markdown_content += '</div>'
+        # GitHub automatically renders square images as circles when using ?size= parameter
+        # We'll use the image URL directly with size parameters
+        circle_img_url = f"{author_img_url.split('?')[0]}?size=200"
+        
+        markdown_content += f"<div align=\"center\">\n\n"
+        markdown_content += f"[![]({circle_img_url})]"
+        markdown_content += f"(https://www.goodreads.com/user/show/191174534-aditya-singh)\n\n"
+        markdown_content += "</div>"
 
     # Update README.md
-    # =============================================
-    # Important: GitHub will only render the image if:
-    # 1. The URL is absolute and publicly accessible
-    # 2. The HTML is simple and uses supported attributes
-    # =============================================
-    
     with open(README_PATH, "r", encoding="utf-8") as f:
         content = f.read()
 
@@ -88,9 +85,9 @@ try:
         f.write(new_content)
 
     print("✅ README updated successfully!")
-    print(f"ℹ️ Quote added: {quote_text[:50]}...")
+    print(f"ℹ️ Quote: {quote_text[:50]}...")
     print(f"ℹ️ Author: {author}")
-    print(f"ℹ️ Image: {'✅ Found' if author_img_url else '❌ Not found'}")
+    print(f"ℹ️ Image URL: {circle_img_url if author_img_url else 'None'}")
 
 except Exception as e:
     print(f"❌ Error: {e}")
