@@ -1,16 +1,15 @@
-name: Update README with Goodreads Quote
+name: Update Goodreads Quote
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Runs daily at midnight UTC
-  workflow_dispatch:      # Allows manual triggering
+    - cron: '0 6 * * *' # daily at 06:00 UTC (~11:30 IST)
+  workflow_dispatch:
 
 jobs:
-  update-readme:
+  update-quote:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -19,15 +18,17 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt || true
+        run: pip install requests beautifulsoup4
 
-      - name: Update README with a random quote
-        run: python scripts/update_readme.py
+      - name: Scrape latest Goodreads quote
+        env:
+          PROFILE_URL: "https://www.goodreads.com/user/show/191174534-aditya-singh"
+        run: python scripts/fetch_goodreads_quote.py
 
-      - name: Commit and push if changed
+      - name: Commit & push changes
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "Update README with new quote" || echo "No changes to commit"
-          git push
+          git commit -m "Update Goodreads Quote of the Day" || echo "No changes"
+          git push origin HEAD:${{ github.ref }}
