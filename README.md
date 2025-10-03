@@ -4,11 +4,11 @@
 
 <table><tr>
 <td width="30%" align="center">
-  <img src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/authors/1301591370i/80592._UX200_CR0,27,200,200_.jpg" alt="Swami Vivekananda" width="150" style="border-radius:50%">
+  <img src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/authors/1679568617i/30691._UX200_CR0,36,200,200_.jpg" alt="Adolf Hitler" width="150" style="border-radius:50%">
 </td>
 <td width="70%" valign="center">
-  <p style="font-size: 16px; font-style: italic;">“Do one thing at a Time, and while doing it put your whole Soul into it to the exclusion of all else.”</p>
-  <p align="right" style="font-weight: bold;">― Swami Vivekananda</p>
+  <p style="font-size: 16px; font-style: italic;">“Do not compare yourself to others. If you do so, you are insulting yourself.”</p>
+  <p align="right" style="font-weight: bold;">― Adolf Hitler</p>
 </td>
 </tr></table>
 
