@@ -4,11 +4,11 @@
 
 <table><tr>
 <td width="30%" align="center">
-  <img src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/authors/1301591370i/80592._UX200_CR0,27,200,200_.jpg" alt="Swami Vivekananda" width="150" style="border-radius:50%">
+  <img src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/authors/1435903703i/2622245._UX200_CR0,13,200,200_.jpg" alt="Lao Tzu, Tao Te Ching" width="150" style="border-radius:50%">
 </td>
 <td width="70%" valign="center">
-  <p style="font-size: 16px; font-style: italic;">“Do one thing at a Time, and while doing it put your whole Soul into it to the exclusion of all else.”</p>
-  <p align="right" style="font-weight: bold;">― Swami Vivekananda</p>
+  <p style="font-size: 16px; font-style: italic;">“Knowing others is intelligence; knowing yourself is true wisdom. Mastering others is strength; mastering yourself is true power.”</p>
+  <p align="right" style="font-weight: bold;">― Lao Tzu, Tao Te Ching</p>
 </td>
 </tr></table>
 
