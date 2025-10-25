@@ -4,11 +4,11 @@
 
 <table><tr>
 <td width="30%" align="center">
-  <img src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/authors/1679568617i/30691._UX200_CR0,36,200,200_.jpg" alt="Adolf Hitler" width="150" style="border-radius:50%">
+  <img src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/authors/1435903703i/2622245._UX200_CR0,13,200,200_.jpg" alt="Lao Tzu, Tao Te Ching" width="150" style="border-radius:50%">
 </td>
 <td width="70%" valign="center">
-  <p style="font-size: 16px; font-style: italic;">“Do not compare yourself to others. If you do so, you are insulting yourself.”</p>
-  <p align="right" style="font-weight: bold;">― Adolf Hitler</p>
+  <p style="font-size: 16px; font-style: italic;">“Knowing others is intelligence; knowing yourself is true wisdom. Mastering others is strength; mastering yourself is true power.”</p>
+  <p align="right" style="font-weight: bold;">― Lao Tzu, Tao Te Ching</p>
 </td>
 </tr></table>
 
