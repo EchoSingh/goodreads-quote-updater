@@ -1,9 +1,6 @@
 name: Update Goodreads Quote
 
-on:
-  schedule:
-    - cron: '0 6 * * *' # daily at 06:00 UTC (~11:30 IST)
-  workflow_dispatch:
+on: []
 
 jobs:
   update-quote:
